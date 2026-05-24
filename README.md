@@ -167,7 +167,7 @@ Surveillance-System/
 # 📷 Screenshots
 ## Login
 
-![Login](screenshots/dashboard.png)
+![Login](screenshots/Login.png)
 
 ---
 
@@ -201,7 +201,7 @@ Surveillance-System/
 ## Step 1 — Clone Repository
 
 ```bash
-git clone https://github.com/your-username/surveillance-system-weapon-violence-detection.git
+git clone https://github.com/shafa-21/surveillance-system-weapon-violence-detection.git
 ```
 
 ---
@@ -232,13 +232,7 @@ python manage.py runserver
 
 ---
 
-## Run Surveillance Detection
 
-```bash
-python main.py
-```
-
----
 
 # 📊 Results Obtained
 
@@ -268,23 +262,8 @@ The proposed surveillance system successfully combines weapon detection and viol
 
 ---
 
-# 📚 References
 
-1. Joseph Redmon et al., “YOLO Object Detection System.”
-2. Mark Sandler et al., “MobileNetV2.”
-3. Sepp Hochreiter et al., “Long Short-Term Memory.”
-4. OpenCV Documentation.
-5. Django Documentation.
+# 👨‍💻 Author
 
----
+- Shafa D
 
-# 👨‍💻 Authors
-
-- Your Name
-- Team Members
-
----
-
-# 📜 License
-
-This project is developed for educational and research purposes.
