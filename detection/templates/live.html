@@ -1,0 +1,346 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Stream - AI CCTV</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #38bdf8;
+            --primary-dark: #0ea5e9;
+            --bg-dark: #020617; 
+            --bg-card: #111827;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --danger: #ef4444;
+            --warning: #f97316;
+            --success: #22c55e;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(12px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        #alertBanner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(185, 28, 28, 0.9);
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: 700;
+            z-index: 1001;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-dim);
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            color: var(--primary);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .dashboard-container {
+            max-width: 1100px;
+            margin: 120px auto 40px;
+            padding: 0 20px;
+        }
+
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px;
+        }
+
+        .dot {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            background: #475569;
+        }
+
+        .dot.active {
+            background: var(--success);
+            box-shadow: 0 0 12px var(--success);
+        }
+
+        .security-alert-text {
+            display: none;
+            text-align: center;
+            color: var(--danger);
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .security-alert-text.active {
+            display: block;
+        }
+
+        .monitor-frame {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            transition: all 0.5s ease;
+        }
+
+        .monitor-frame.alert {
+            border: 2px solid var(--danger);
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.6);
+        }
+
+        .video-wrapper {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #videoStream {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .placeholder-text {
+            color: #334155;
+            text-align: center;
+        }
+
+        .control-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-start { background: var(--success); }
+        .btn-stop { background: var(--danger); }
+        .btn-full { background: var(--primary); }
+    </style>
+</head>
+
+<body>
+
+<div id="alertBanner">🚨 SECURITY ALERT DETECTED 🚨</div>
+
+<nav>
+    <a href="{% url 'home' %}" class="logo">
+        <i class="fas fa-shield-alt"></i> AI CCTV
+    </a>
+
+    <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'live' %}" class="active">Live Feed</a></li>
+        <li><a href="{% url 'events' %}">Events Log</a></li>
+    </ul>
+
+    <a href="{% url 'logout' %}" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</nav>
+
+<div class="dashboard-container">
+
+    <div class="header-flex">
+        <h1>Surveillance <span style="color: var(--primary)">Feed</span></h1>
+
+        <div class="status-badge">
+            <span class="dot" id="statusDot"></span>
+            <span id="statusLabel">SYSTEM OFFLINE</span>
+        </div>
+    </div>
+
+    <div id="securityAlertText" class="security-alert-text">
+        Security Alert Detected
+    </div>
+
+    <div class="monitor-frame">
+        <div class="video-wrapper">
+
+            <div id="placeholder" class="placeholder-text">
+                <p>Click Start to begin monitoring stream</p>
+            </div>
+
+            <img id="videoStream">
+
+        </div>
+    </div>
+
+    <div class="control-bar">
+        <button class="btn btn-start" onclick="toggleCamera(true)">Start</button>
+        <button class="btn btn-stop" onclick="toggleCamera(false)">Stop</button>
+    </div>
+
+</div>
+
+<script>
+let streamActive = false;
+
+function toggleCamera(start) {
+    const video = document.getElementById("videoStream");
+    const placeholder = document.getElementById("placeholder");
+
+    streamActive = start;
+
+    if (start) {
+        // IMPORTANT: use Django URL tag
+        video.src = "{% url 'video_feed' %}?t=" + Date.now();
+
+        video.style.display = "block";
+        placeholder.style.display = "none";
+    } else {
+        video.src = "";
+        video.style.display = "none";
+        placeholder.style.display = "block";
+
+        triggerSecurityAlert(false);
+    }
+}
+
+function triggerSecurityAlert(active) {
+    const banner = document.getElementById("alertBanner");
+    const frame = document.querySelector(".monitor-frame");
+    const text = document.getElementById("securityAlertText");
+
+    if (active) {
+        banner.style.display = "block";
+        frame.classList.add("alert");
+        text.classList.add("active");
+    } else {
+        banner.style.display = "none";
+        frame.classList.remove("alert");
+        text.classList.remove("active");
+    }
+}
+
+async function checkDetection() {
+    if (!streamActive) return;
+
+    try {
+        const response = await fetch("{% url 'alert_status' %}");
+        const data = await response.json();
+
+        triggerSecurityAlert(data.alert);
+    } catch (e) {
+        console.log("Status check failed");
+    }
+}
+
+setInterval(checkDetection, 1000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,394 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Events Log - AI CCTV</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #38bdf8;
+            --primary-dark: #0ea5e9;
+            --bg-dark: #020617; 
+            --bg-card: #111827;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --danger: #ef4444;
+            --warning: #f97316;
+            --success: #22c55e;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(12px);
+            position: fixed;
+            top: 0; width: 100%; z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-dim);
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--primary);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .container {
+            padding: 120px 5% 60px;
+        }
+
+        /* --- FILTER SECTION --- */
+        .filter-section {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+        }
+
+        .filter-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-form input,
+        .filter-form select {
+            padding: 10px;
+            border-radius: 8px;
+            background: #0f172a;
+            color: white;
+            border: 1px solid var(--glass-border);
+            outline: none;
+        }
+
+        .btn-apply {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* --- TIMELINE --- */
+        .timeline {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .timeline-card {
+            min-width: 240px;
+            background: var(--bg-card);
+            border-left: 3px solid var(--primary);
+            padding: 15px;
+            border-radius: 10px;
+            border-top: 1px solid var(--glass-border);
+            border-right: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        /* --- GRID --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .weapon-badge {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .violence-badge {
+            background: rgba(249, 115, 22, 0.15);
+            color: var(--warning);
+        }
+
+        .media-box {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: black;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            border: 1px solid var(--glass-border);
+        }
+
+        .media-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-link {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .del-link {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .down-link {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        /* --- MODAL --- */
+        #eventModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            background: #0f172a;
+            padding: 25px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .modal-box img {
+            width: 100%;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-dim);
+        }
+
+        @media (max-width: 768px) {
+            nav ul { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a href="{% url 'home' %}" class="logo">
+        <i class="fas fa-shield-alt"></i> AI CCTV
+    </a>
+
+    <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'live' %}">Live Feed</a></li>
+        <li><a class="active" href="{% url 'events' %}">Events Log</a></li>
+    </ul>
+
+    <a class="logout-btn" href="{% url 'logout' %}">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</nav>
+
+<div class="container">
+
+    <div class="filter-section">
+        <form class="filter-form">
+            <input type="text" name="search" placeholder="Search events...">
+            <select name="type">
+                <option value="">All Types</option>
+                <option value="weapon">Weapon</option>
+                <option value="violence">Violence</option>
+            </select>
+            <input type="date" name="date">
+            <button class="btn-apply">Filter</button>
+        </form>
+    </div>
+
+    <div class="timeline">
+        {% for e in events %}
+        <div class="timeline-card">
+            <b style="color: var(--primary)">{{ e.event_type|upper }}</b><br>
+            <small style="color: var(--text-dim)">{{ e.time }}</small>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="grid">
+        {% for e in events %}
+        <div class="card">
+
+            {% if e.event_type == "weapon" %}
+                <span class="badge weapon-badge">Weapon</span>
+            {% else %}
+                <span class="badge violence-badge">Violence</span>
+            {% endif %}
+
+            <div class="media-box">
+                {% if e.screenshot %}
+                <img src="{{ e.screenshot.url }}"
+                     onclick="openModal('{{ e.event_type }}','{{ e.time }}','{{ e.screenshot.url }}','{{ e.video.url }}')">
+                {% endif %}
+            </div>
+
+            <p style="font-size: 0.8rem; color: var(--text-dim)">
+                <i class="far fa-clock"></i> {{ e.time }}
+            </p>
+
+            <div class="actions">
+                <a class="action-link del-link" href="{% url 'delete_event' e.id %}">Delete</a>
+
+                {% if e.video %}
+                <a class="action-link down-link" href="{{ e.video.url }}" download>
+                    Download Video
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<div id="eventModal">
+    <div class="modal-box">
+        <span class="close" onclick="closeModal()">✖</span>
+
+        <h3 id="mType" style="color: var(--primary); font-family: 'Poppins';"></h3>
+        <p id="mTime" style="color: var(--text-dim); font-size: 0.9rem;"></p>
+
+        <img id="mImg">
+
+        <div style="text-align: right;">
+            
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal(type,time,img,video){
+    document.getElementById("eventModal").style.display="flex";
+    document.getElementById("mType").innerText=type.toUpperCase() + " DETECTED";
+    document.getElementById("mTime").innerText=time;
+    document.getElementById("mImg").src=img;
+    document.getElementById("mDownload").href=video;
+}
+
+function closeModal(){
+    document.getElementById("eventModal").style.display="none";
+}
+
+window.onclick = function(event) {
+    let modal = document.getElementById("eventModal");
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+</script>
+
+</body>
+</html>

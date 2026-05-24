@@ -1,0 +1,400 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Advanced Surveillance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #38bdf8;
+            --primary-dark: #0ea5e9;
+            --bg-dark: #0f172a; /* Matched to original dark blue */
+            --bg-card: #111827;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --danger: #ef4444;
+            --warning: #f97316;
+            --success: #22c55e;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0; width: 100%; z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--primary);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* --- HERO WITH ORIGINAL ANIMATION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+            position: relative;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.85)),
+                        url("{% static 'images/cctv_front.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+        }
+
+        /* THE GRID ANIMATION EFFECT */
+        .grid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(56,189,248,0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56,189,248,0.2) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(60px); }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            margin-bottom: 1.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 35px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            background: var(--primary);
+            color: #0f172a;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+        }
+
+        /* --- STATS SECTION --- */
+        .section-padding {
+            padding: 80px 5%;
+            background: #020617; /* Darker contrast */
+            position: relative;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: -60px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 35px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* --- FEATURES SECTION --- */
+        .features-section {
+            background: var(--bg-dark);
+            padding: 100px 5%;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 15px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: #1e293b;
+            padding: 45px;
+            border-radius: 20px;
+            transition: 0.4s;
+            border: 1px solid rgba(255,255,255,0.03);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px);
+            background: #24334a;
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .feature-card p {
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+
+        footer {
+            padding: 40px;
+            text-align: center;
+            background: #000;
+            color: var(--text-dim);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        @media (max-width: 768px) {
+            nav ul { display: none; }
+            .hero { padding: 0 5%; text-align: center; }
+            .hero-content { margin: 0 auto; }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a href="#" class="logo">
+        <i class="fas fa-shield-alt"></i> AI CCTV
+    </a>
+
+    <ul>
+        <li><a href="{% url 'home' %}" class="active">Home</a></li>
+        <li><a href="{% url 'live' %}">Live Feed</a></li>
+        <li><a href="{% url 'events' %}">Events Log</a></li>
+    </ul>
+
+    <a href="{% url 'logout' %}" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</nav>
+
+<section class="hero">
+    <div class="grid-bg"></div>
+
+    <div class="hero-content">
+        <h1>Intelligent <span>AI Surveillance</span> System</h1>
+        <p>
+            Real-time monitoring powered by YOLOv8 for weapon detection and CNN-LSTM for violence recognition. 
+            Automatically detects threats, captures evidence, and stores critical events securely.
+        </p>
+        <a href="{% url 'live' %}" class="btn">
+            <i class="fas fa-video"></i> Start Monitoring
+        </a>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(56,189,248,0.1); color: var(--primary);">
+                <i class="fas fa-database"></i>
+            </div>
+            <div>
+                <p style="color: var(--text-dim); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Processed Events</p>
+                <h2>{{ total_events|default:"0" }}</h2>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(239,68,68,0.1); color: var(--danger);">
+                <i class="fas fa-gun"></i>
+            </div>
+            <div>
+                <p style="color: var(--text-dim); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Weapons Detected</p>
+                <h2 style="color: var(--danger);">{{ weapon_count|default:"0" }}</h2>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(249,115,22,0.1); color: var(--warning);">
+                <i class="fas fa-user-ninja"></i>
+            </div>
+            <div>
+                <p style="color: var(--text-dim); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Violence Alerts</p>
+                <h2 style="color: var(--warning);">{{ violence_count|default:"0" }}</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features-section">
+    <div class="section-header">
+        <h2>Intelligent Security Features</h2>
+        <p style="color: var(--text-dim);">Advanced AI models working together for real-time threat detection.</p>
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature-card">
+            <i class="fas fa-microchip"></i>
+            <h3>YOLOv8 Weapon Detection</h3>
+            <p>Detects weapons in real-time with high accuracy across different environments using state-of-the-art computer vision.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fas fa-brain"></i>
+            <h3>Violence Detection (CNN-LSTM)</h3>
+            <p>Analyzes human motion patterns over time to identify violent activities, ensuring rapid response while reducing false alarms.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fas fa-bolt"></i>
+            <h3>Automated Alerts</h3>
+            <p>Instantly triggers system alerts and automatically stores high-resolution screenshots and video recordings of detected threats.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2026 AI Surveillance System | Developed with Django & Deep Learning</p>
+</footer>
+
+</body>
+</html>
