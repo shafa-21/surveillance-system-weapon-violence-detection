@@ -149,15 +149,10 @@ Surveillance-System/
 │
 ├── weapon_detection/
 ├── violence_detection/
-├── dashboard/
-├── dataset/
-├── models/
-├── screenshots/
-├── alerts/
-├── static/
-├── templates/
+├── ccttv_webapp/
+├──detection/
+├── media/
 ├── manage.py
-├── main.py
 ├── requirements.txt
 └── README.md
 ```
